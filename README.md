@@ -35,11 +35,7 @@ Once we've convinced ourselves that this is, in fact, a good approach, we will s
 
 
 ## Escherichia coli
-Escherichia coli (E. Coli) is a bacteria commonly found in the human intestine. Most strains are harmless to humans, at worse, causing food poisoning and diarrhea. They can survive outside a host for only a short period of time, making it a potential indicator of fecal contamination.
-
-Over the years, E. Coli has been intensely studied and is probably one of the most well-understood organisms in existence. We've learned how to grow them in an optimal environment where they can reproduce up to once every 20 minutes. Due to their rapid growth and easy manipulation, biologists often use them to produce recombinant proteins.
-![image](https://github.com/user-attachments/assets/d884f29d-2c41-4da7-a9be-4615edee1196)
-Image source: https://doi.org/10.1371/journal.pbio.0030045
+Escherichia coli (E. Coli) is a bacteria commonly found in the human intestine. Most strains are harmless to humans, at worse, causing food poisoning and diarrhea. They can survive outside a host for only a short period of time, making it a potential indicator of fecal contamination. Over the years, E. Coli has been intensely studied and is probably one of the most well-understood organisms in existence. We've learned how to grow them in an optimal environment where they can reproduce up to once every 20 minutes. Due to their rapid growth and easy manipulation, biologists often use them to produce recombinant proteins.
 
 Recombinant proteins are proteins that wouldn't naturally appear in that organism. For instance, we can insert genes that code for fluorescence into plants, making them glow in the dark. Or, perhaps more usefully, we can take the human gene that codes for insulin and convince E. Coli to produce insulin instead. Insulin that we can then use to treat diabetic patients. Or proteins used in cancer treatment. Or, more recently, we can insert fragments of the SARS-CoV-2 virus into E. Coli and use that to produce COVID-19 vaccines. E. coli is a very well-studied organism, therefore, well-annotated. This means we can quickly check our work for any analysis we might perform because we have the ground truth, which biologists have spent decades meticulously gathering for us. We will examine the DNA sequence of E. coli and implement an algorithm for finding potential gene candidates. Because the ground truth is readily available, we can check how many of our ORF candidates are actual genes and how many candidates are false positives.
 
@@ -54,7 +50,7 @@ We are now in a python scripting environemnt. Not bash! Your bash commands will 
 
 
 
-Fetch the E. coli genome from NCBI. To check you have the right one, the genome should be 4,641,652 base pairs long. It might take up-to a minute to download.
+Fetch the E. coli genome from NCBI. We already learned how to do this in bash. Now we are going to learn with biopython. To check you have the right one, the genome should be 4,641,652 base pairs long. It might take up-to a minute to download.
 
 We are using the Entrez.efetch (http://biopython.org/DIST/docs/tutorial/Tutorial.html#sec149) and SeqIO.read (http://biopython.org/DIST/docs/tutorial/Tutorial.html#sec37) functions from biopython.
 
@@ -119,6 +115,9 @@ Okay, great!!! Moving right along. We need to get set up to do some more elegant
 #make sure you are in your lab_9 directory
 cp /projects/class/binf3101_001/helper_functions.py .
 ```
+
+
+
 
 
 [![License: CC BY-NC-SA 4.0](https://licensebuttons.net/l/by-nc-sa/4.0/80x15.png)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
