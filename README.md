@@ -56,12 +56,13 @@ We are now in a python scripting environemnt. Not bash! Your bash commands will 
 
 Fetch the E. coli genome from NCBI. To check you have the right one, the genome should be 4,641,652 base pairs long. It might take up-to a minute to download.
 
-We are using the Entrez.efetch (http://biopython.org/DIST/docs/tutorial/Tutorial.html#sec149) and SeqIO.read (http://biopython.org/DIST/docs/tutorial/Tutorial.html#sec37) functions from biopython. We are using rettype="gbwithparts" to fetch all required features.
+We are using the Entrez.efetch (http://biopython.org/DIST/docs/tutorial/Tutorial.html#sec149) and SeqIO.read (http://biopython.org/DIST/docs/tutorial/Tutorial.html#sec37) functions from biopython.
 
+Here are two ways to 
 ```python
 from Bio import Entrez
 
-Entrez.email = "lyohe1@charlotte.edu"  # Always provide your email when using Entrez
+Entrez.email = "your.email@charlotte.edu"  # Always provide your email when using Entrez
 
 # Fetch the E. coli K-12 MG1655 genome (NC_000913)
 handle = Entrez.efetch(db="nucleotide", id="NC_000913", rettype="gbwithparts", retmode="text")
@@ -77,7 +78,7 @@ handle.close()
 from Bio import Entrez, SeqIO
 
 # Always provide your email when using Entrez
-Entrez.email = "lyohe1@charlotte.edu"
+Entrez.email = "your.email@charlotte.edu"
 
 # Specify the genome you want to download (e.g., E. coli K-12)
 genome_id = "NC_000913"
@@ -92,6 +93,32 @@ with open(f"{genome_id}.fasta", "w") as output_file:
 handle.close()
 ```
 
+To exit python and return to bash, type the folloiwng command:
+
+```python
+exit()
+```
+
+# LQ 1.a: Reading python script
+
+What are two differences in the script above?
+
+# LQ 1.b Understanding the output
+
+Inspect both outputs using head. How do they differ?
+
+# LQ 1.c 
+ Determine how many base pairs are in the E.coli genome.
+
+# LQ 1.d
+Paste the command you used to determin this or explain how you got your answer.
+
+Okay, great!!! Moving right along. We need to get set up to do some more elegant analyses like looking for open reading frames. Make some functions accessible here.
+
+```bash
+#make sure you are in your lab_9 directory
+cp /projects/class/binf3101_001/helper_functions.py .
+```
 
 
 [![License: CC BY-NC-SA 4.0](https://licensebuttons.net/l/by-nc-sa/4.0/80x15.png)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
