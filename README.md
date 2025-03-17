@@ -50,7 +50,7 @@ We are now in a python scripting environemnt. Not bash! Your bash commands will 
 
 
 
-Fetch the E. coli genome from NCBI. We already learned how to do this in bash. Now we are going to learn with biopython. To check you have the right one, the genome should be 4,641,652 base pairs long. It might take up-to a minute to download.
+Fetch the E. coli genome from NCBI. We already learned how to do this in bash. Now we are going to learn with biopython.  It might take up-to a minute to download.
 
 We are using the Entrez.efetch (http://biopython.org/DIST/docs/tutorial/Tutorial.html#sec149) and SeqIO.read (http://biopython.org/DIST/docs/tutorial/Tutorial.html#sec37) functions from biopython.
 
