@@ -23,6 +23,10 @@ SARS-CoV-2, the coronavirus causing COVID-19, will be analyzed in this lab serie
 Escherichia coli (E. Coli) is a bacteria commonly found in the human intestine. Most strains are harmless to humans, at worse, causing food poisoning and diarrhea. They can survive outside a host for only a short period of time, making it a potential indicator of fecal contamination. Over the years, E. Coli has been intensely studied and is probably one of the most well-understood organisms in existence. We've learned how to grow them in an optimal environment where they can reproduce up to once every 20 minutes. Due to their rapid growth and easy manipulation, biologists often use them to produce recombinant proteins.
 
 Recombinant proteins are proteins that wouldn't naturally appear in that organism. For instance, we can insert genes that code for fluorescence into plants, making them glow in the dark. Or, perhaps more usefully, we can take the human gene that codes for insulin and convince E. Coli to produce insulin instead. Insulin that we can then use to treat diabetic patients. Or proteins used in cancer treatment. Or, more recently, we can insert fragments of the SARS-CoV-2 virus into E. Coli and use that to produce COVID-19 vaccines. E. coli is a very well-studied organism, therefore, well-annotated. This means we can quickly check our work for any analysis we might perform because we have the ground truth, which biologists have spent decades meticulously gathering for us. We will examine the DNA sequence of E. coli and implement an algorithm for finding potential gene candidates. Because the ground truth is readily available, we can check how many of our ORF candidates are actual genes and how many candidates are false positives.
+![DFE-Ecoli-Kinds-2019-Pathogen-Illustration](https://github.com/user-attachments/assets/2c00a1e4-6f49-4b20-b2e3-4a48904a1510)
+
+
+
 
 Every organism in NCBI has an associated unique identifier, which we can use to download various genomes and other kinds of data. The NCBI ID for E. coli is NC_000913.
 
@@ -80,18 +84,18 @@ To exit python and return to bash, type the folloiwng command:
 exit()
 ```
 
-# LQ 1.a: Reading python script
+## LQ 1.a: Reading python script
 
 What are two differences in the script above?
 
-# LQ 1.b Understanding the output
+## LQ 1.b Understanding the output
 
 Inspect both outputs using head. How do they differ?
 
-# LQ 1.c 
+## LQ 1.c 
  Determine how many base pairs are in the E.coli genome.
 
-# LQ 1.d
+## LQ 1.d
 Paste the command you used to determin this or explain how you got your answer.
 
 Okay, great!!! Moving right along. We need to get set up to do some more elegant analyses like looking for open reading frames. Make some functions accessible here.
@@ -217,13 +221,13 @@ def find_all_orfs(genome_file: str, min_length: int = 30) -> List[Dict]:
 
 ```
 
-# LQ 9.2a
+## LQ 9.2a
 
 After analyzing the code, cosider the following as TRUE or FALSE.
 
 The function find_all_orfs() implements find_orfs().
 
-# LQ 9.2b
+## LQ 9.2b
 
 What are the differences between the two functions find_all_orfs() and find_orfs()?
 
@@ -234,7 +238,7 @@ That was fun, wasn't it? Okay, do not close your python terminal. Python is an o
 orfs = find_all_orfs("NC_000913.fasta")
 ```
 It may take a second to run.
-# LQ 9.2c
+## LQ 9.2c
 
 We made an object that inherited the output of find_all_orfs(). What did we name this object?
 
@@ -249,7 +253,7 @@ a bunch of stuff prints to screen.
 type(orfs)
 ```
 
-# LQ 9.2c
+## LQ 9.2d
 
 What type of object is our object?
 
@@ -261,7 +265,7 @@ first
 ```
 The object first inherits all of the output of our command, saving us lots of typing and enhancing our ability to scale up. Cool.
 
-# LQ 9.2d
+## LQ 9.2e
 What does the second line in our orfs[] list look like? Find its length and submit the answer.
 
 
@@ -273,13 +277,123 @@ long_orfs = [orf for orf in orfs if orf['length'] >= 300]
 print(f"Found {len(long_orfs)} ORFs longer than 300bp")
 ```
 
-# LQ 9.3a
+## LQ 9.3a
 How many orfs are longer than 300bp?
 
 Alter the print function slightly! 
 
-# LQ 9.3b
+## LQ 9.3b
 How many orfs did we originally have before we trimmed?
+
+# PART 2: Working with a novel genome
+Okay, now time for things to get interesting. We are ready to work with the SARS-CoV-2 genome!
+![sars_cov_2_shutterstock_1889563108_crop_0](https://github.com/user-attachments/assets/e19e8c07-e6de-4040-a235-bb8dddb0aff1)
+I am sure most of you are well aware of what the disease does, so we'll skip any long-winded introduction. Instead, we'll jump straight into the genome of this pesky little virus.
+
+
+
+Exit out of python.
+```python
+exit()
+```
+
+I have kindly provided you with the genome in the shared lab folder. Bring it over to your lab_9 directory.
+```
+cp /projects/class/binf3101_001/sars_cov_2.fasta ~/lab_9
+```
+
+
+Let's see how long the virus of SARS-CoV-2 is.
+```bash
+awk 'BEGIN{FS="[> ]"} /^>/{val=$2;next}  {print val,length($0)}'   sars_cov_2.fasta
+```
+
+# LQ9.4
+
+The genome of SARS-CoV-2 is ________ bp and it is ________ bp smaller than the ecoli genome. Tiny! (hint: use substraction from questsion LQ9.1c)
+
+
+Okay, now we are going to do the same thing to the SARS-CoV-2 genome as we did with E.coli. We need to find all of the ORFs and filter out the ones less than 300bp. Don't be scared, you are on your way to being a python whiz.
+
+Get your python envinrment set up in case you are starting from a new log in.
+
+```bash
+module load python
+python
+```
+We will have to redefine the functions again, but there is one key difference.
+The start codon and stop codons of SARS-CoV-2 differ sligthly than E.Coli. Change the two lines of code from the functions we made from E.coli before copying and pasting.
+```
+start_codons = ["ATG"]
+stop_codons = ["TGA", "TAA", "TAG"]
+```
+
+# LQ 9.5a
+SARS-CoV-2 has _______ total ORFs and ____ ORFs less than 300 bp.
+
+# LQ 9.5b
+The length of the first ORF in the SARS-CoV-2 genome from the TRIMMED ORFs object (long_orfs) is ____ bp.
+
+Quite different than our good friend E.Coli! Nothing but bare-bones in most viruses. :) Wild how they can wreak havoc with just small levels of genomic machinery.
+
+
+
+# PART 3: Determining gene functionality from amino acid sequence
+Okay, so we've found and filtered down our gene candidates, but now what? The next step is to figure out what these genes might do. So, what do these genes do? Well, nothing by themselves. If DNA is the cookbook, then the genes are the recipes. They tell us how to prepare each dish. Recipes by themselves are nothing but information. It is the actual dishes we care about: the proteins. It is the proteins that actually do things inside our cells.
+
+An organism can read codons in ORFs (hence open-READING-frame) and translate the language of codons into amino acids. Codons in a DNA sequence are translated into amino acids consecutively, forming a long chain. The amino acid chain folds into a macromolecule called protein (as shown in the picture below). Their 3D structure is crucial for their function. We can predict protein characteristics from the amino acid sequence, such as their location in a cell. However, for a more concrete prediction of the functionality, we would have to use more sophisticated approaches, such as BLAST or AlphaFold.
+
+
+## Intro to hydrophobicity
+The hydrophobicity of an amino acid is its tendency to repel water molecules. These amino acids tend to stick together in a non-polar environment. One well-known example of hydrophobicity is the lipid membrane of cells. This hydrophobic cell membrane ensures that the environment outside the cell (water and anything inside that water) stays outside, and all the important bits of the cell (e.g., the mitochondria, nucleus, ribosomes) stay inside the cell.
+
+Hydrophilic proteins cannot pass through the hydrophobic membrane since its hydrophobic interior will repel them, but hydrophobic proteins can sit happily embedded inside the membrane. These hydrophobic proteins are called transmembrane proteins. Transmembrane proteins typically function as transport channels between the interior and exterior of the cell and enable cell signaling and absorption. In the case of viruses, e.g., SARS-CoV-2, we expect at least some proteins to be embedded in the viral membrane. For instance, SARS-CoV-2 viruses can only enter human cells when the spike protein that sticks out on the exterior of the virus binds to a specific receptor in human cells.
+
+Transmembrane proteins usually contain more hydrophobic amino acids than other proteins because their environment is a strictly hydrophobic lipid membrane. Therefore, one naive approach to finding transmembrane proteins might be to look for proteins with a high degree of hydrophobicity.
+
+The less-biological explanation of all this might be that the little, yellow hydrophobic tails of the lipids in the membrane attract each other because they are all hydrophobic. They can also attract proteins, provided that the amino acids inside that protein are also hydrophobic. The little hydrophobic tails also repel anything hydrophilic, so hydrophilic proteins can't pass through the hydrophobic membrane. So, simply put, hydrophobic molecules attract other hydrophobic molecules and repel any hydrophilic molecules. Finally, hydrophobic molecules repel water, while hydrophilic molecules are drawn toward water.
+
+Yada, yada, yada.
+
+We now are going to translate our open reading frames and export them into a fasta file of amino acid sequences using this beautiful code I am providing you.
+
+```python
+from typing import List, Dict
+
+def export_trimmed_proteins(orfs: List[Dict], output_filename: str) -> None:
+    """
+    Export ORF protein sequences in FASTA format with stop codons removed
+    
+    Args:
+        orfs: List of ORF dictionaries (from find_orfs/find_all_orfs)
+        output_filename: Name for output FASTA file
+    
+    Returns:
+        None (writes to file)
+    """
+    with open(output_filename, 'w') as fasta_file:
+        for i, orf in enumerate(orfs, 1):
+            # Trim trailing stop codon and convert to string
+            protein_seq = str(orf['protein']).rstrip('*')
+            
+            # Create informative FASTA header
+            header = (
+                f">{orf['sequence_id']}_ORF{i}|"
+                f"start={orf['start']}|end={orf['end']}|"
+                f"strand={orf['strand']}|length={orf['length']}aa"
+            )
+            
+            # Write formatted sequence (60 chars per line)
+            fasta_file.write(header + "\n")
+            for j in range(0, len(protein_seq), 60):
+                fasta_file.write(protein_seq[j:j+60] + "\n")
+```
+
+You can run the command on your long_orfs you saved from SARS-CoV-2. 
+
+```
+export_trimmed_proteins(long_orfs, "sars_cov_2_proteome.fasta")
+```
 
 
 
