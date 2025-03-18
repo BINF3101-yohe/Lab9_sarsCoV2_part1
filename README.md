@@ -391,11 +391,99 @@ def export_trimmed_proteins(orfs: List[Dict], output_filename: str) -> None:
 
 You can run the command on your long_orfs you saved from SARS-CoV-2. 
 
-```
+```python
 export_trimmed_proteins(long_orfs, "sars_cov_2_proteome.fasta")
 ```
 
+I know it may be frustrating for you to move from python to bash. If you want to inspect your file names in your directory, you can use the following commands. Just note it will return them as a list, but it will still allow you to see what is there.
 
 
+```python
+import os
+os.listdir()
+```
+
+Here is a script to 
+```python
+import csv
+from Bio import SeqIO
+from typing import List, Dict
+import re
+
+def load_hydrophobicity_table(csv_path: str) -> Dict[str, float]:
+    """
+    Load amino acid hydrophobicity values from CSV file
+    
+    Args:
+        csv_path: Path to CSV file with columns 'amino_acid' and 'hydrophobicity'
+        
+    Returns:
+        Dictionary mapping single-letter amino acid codes to hydrophobicity values
+    """
+    hydro_dict = {}
+    with open(csv_path, 'r') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            aa = row['aminoacid'].upper()
+            hydro_dict[aa] = float(row['hydrophobicity'])
+    return hydro_dict
+
+def calculate_hydrophobicities(fasta_file: str, hydro_table: Dict[str, float]) -> List[Dict]:
+    """
+    Calculate average hydrophobicity for proteins in FASTA file
+    
+    Args:
+        fasta_file: Path to FASTA file from export_trimmed_proteins()
+        hydro_table: Hydrophobicity dictionary from load_hydrophobicity_table()
+        
+    Returns:
+        List of dictionaries with protein metadata and hydrophobicity scores
+    """
+    results = []
+    
+    for record in SeqIO.parse(fasta_file, 'fasta'):
+        # Parse metadata from FASTA header
+        header_parts = re.split(r'\||=', record.description)
+        
+        # Extract sequence information
+        seq_id_orf = header_parts[0].lstrip('>')
+        seq_parts = seq_id_orf.split('_ORF')
+        sequence_id = seq_parts[0]
+        orf_number = int(seq_parts[1]) if len(seq_parts) > 1 else 1
+        
+        metadata = {
+            'sequence_id': sequence_id,
+            'orf_number': orf_number,
+            'start': int(header_parts[2]),
+            'end': int(header_parts[4]),
+            'strand': header_parts[6],
+            'aa_length': int(header_parts[8].replace('aa', '')),
+            'protein_id': record.id
+        }
+        
+        # Calculate hydrophobicity
+        total = 0.0
+        valid_aas = 0
+        sequence = str(record.seq).upper()
+        
+        for aa in sequence:
+            if aa in hydro_table:
+                total += hydro_table[aa]
+                valid_aas += 1
+            else:
+                print(f"Warning: No hydrophobicity value for '{aa}' in {record.id}")
+        
+        avg_hydro = total / valid_aas if valid_aas > 0 else float('nan')
+        
+        results.append({
+            **metadata,
+            'average_hydrophobicity': avg_hydro,
+            'valid_aa_count': valid_aas,
+            'total_aa_count': len(sequence)
+        })
+    
+    return results
+
+```
 
 [![License: CC BY-NC-SA 4.0](https://licensebuttons.net/l/by-nc-sa/4.0/80x15.png)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
