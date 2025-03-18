@@ -355,6 +355,12 @@ The less-biological explanation of all this might be that the little, yellow hyd
 
 Yada, yada, yada.
 
+First, some housekeeping. In your bash terminal, still in the lab_9 directory, we need to install a few more modules and copy over a table with the hydrophobicity values of each amino acid.
+```bash
+pip install seaborn
+cp /projects/class/binf3101_001/aminoacid_properties.csv ~/lab_9
+```
+
 We now are going to translate our open reading frames and export them into a fasta file of amino acid sequences using this beautiful code I am providing you.
 
 ```python
@@ -402,7 +408,7 @@ I know it may be frustrating for you to move from python to bash. If you want to
 import os
 os.listdir()
 ```
-
+Now, here is where the magic happens. 
 Here is a script to 
 ```python
 import csv
@@ -484,6 +490,12 @@ def calculate_hydrophobicities(fasta_file: str, hydro_table: Dict[str, float]) -
     
     return results
 
+```
+
+Run the command
+
+```python
+ hydro_table = load_hydrophobicity_table("aminoacid_properties.csv")
 ```
 
 [![License: CC BY-NC-SA 4.0](https://licensebuttons.net/l/by-nc-sa/4.0/80x15.png)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
