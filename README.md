@@ -17,22 +17,7 @@ A lot of things will print to screen if it is working. It may take a few minutes
 
 # Part 1: Taking a smart approach and validating things in a well-known genome.
 
-Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) is a strain of coronavirus that causes COVID-19. Throughout these labs, we will analyze this virus and try to understand its origins and inner workings. We will implement the necessary bioinformatics tools and apply them to further our understanding of this pesky little virus.
-
-First, we will analyze the main component of every organism - its genetic material. Our focus will be on the genes, parts of the genetic material that code for proteins. Proteins are the main macromolecular actors in every organism.
-
-Why are we so interested in genes?
-
-Genes dictate the behavior of an organism, such as replication, viral assembly, and even innate immune evasion. If we compare the genes from this new virus with genes from other known viruses, we can get a good idea of how this virus works and maybe even how to stop it. When these genes are translated into proteins, they start acting out their function. Some proteins can attach to human cells and allow viruses to enter them. If we can figure out which genes these are, they will make good candidates for drug targets.
-
-We can find potential genes in a genome by looking for common patterns shared across all genes. However, validating that these potential candidates are, in fact, real genes requires experimental confirmation.
-
-In this lab, we combine tools that we already know and begin to explore new tools. Our first goal is to find potential genes in the SARS-CoV-2 genome and take a first stab at figuring out what their corresponding proteins do. When looking for genes in an unknown genome, we consider all the Open Reading Frames (ORFs) as potential gene candidates. However, as we remember from our braker and BUSCO labs, many of our ORFs will not be true genes, and since each ORF must be experimentally validated in the lab, we will try to reduce the number of ORFs only to include the most likely gene candidates. One approach for filtering ORFs is to perform a permutation test to determine a threshold indicating the minimum length of ORFs. This will reduce the number of false positives that we generate. So, our approach might be to first find the ORFs, remove ORFs that are likely too short, and then determine what each ORF might do.
-
-However, before we jump right into the SARS-CoV-2 genome, we first want to convince ourselves that this is, in fact, a reasonable approach that produces good results. Since we are going to pretend that SARS-CoV-2 is an unknown virus, we can't check our results to see if they are correct. So instead, we will validate our approach on one of the most well-understood organisms in existence: E. Coli. Here, we will be able to check how many of our ORFs are true genes and how well our threshold selection method actually works.
-
-Once we've convinced ourselves that this is, in fact, a good approach, we will start exploring the SARS-CoV-2 genome. Finally, once we have found and filtered our coronavirus ORFs, we will implement a simple classification technique to determine the function of their corresponding proteins. We will explore computational techniques for determining protein function in the next homework.
-
+SARS-CoV-2, the coronavirus causing COVID-19, will be analyzed in this lab series through bioinformatics approaches to understand its genetic mechanisms and potential therapeutic targets. We focus on identifying protein-coding genes within its genome, as these determine critical functions like host cell entry, replication, and immune evasion. By comparing SARS-CoV-2 genes with those of known viruses, we aim to infer functional roles and prioritize drug targets. Our methodology involves detecting open reading frames (ORFs) as candidate genes, filtering them using permutation tests to eliminate short non-functional sequences, and validating predictions through protein function classification algorithms. To ensure methodological rigor, we first test this pipeline on the well-characterized E. coli genome before applying it to SARS-CoV-2. This stepwise approach balances computational efficiency with biological relevance, streamlining the transition from gene prediction to functional annotation while minimizing false positives requiring experimental validation.
 
 ## Escherichia coli
 Escherichia coli (E. Coli) is a bacteria commonly found in the human intestine. Most strains are harmless to humans, at worse, causing food poisoning and diarrhea. They can survive outside a host for only a short period of time, making it a potential indicator of fecal contamination. Over the years, E. Coli has been intensely studied and is probably one of the most well-understood organisms in existence. We've learned how to grow them in an optimal environment where they can reproduce up to once every 20 minutes. Due to their rapid growth and easy manipulation, biologists often use them to produce recombinant proteins.
@@ -113,9 +98,188 @@ Okay, great!!! Moving right along. We need to get set up to do some more elegant
 
 ```bash
 #make sure you are in your lab_9 directory
-cp /projects/class/binf3101_001/helper_functions.py .
+python
 ```
 
+I am not going to have you WRITE any python code yourself today, but we should begin to look at what it is doing. Here, I am defining three fucntions we will use:
+```bash
+find_orfs()
+find_all_orfs()
+```
+You can copy and paste all of this code directly below into the python prompt. It will create a set of functions we can access in this session.
+
+```python
+from Bio import SeqIO
+from Bio.Seq import Seq
+from typing import List, Dict
+
+def find_orfs(seq_record: SeqIO.SeqRecord, min_length: int = 30) -> List[Dict]:
+    """
+    Find all open reading frames (ORFs) in a sequence record
+    
+    Args:
+        seq_record: Biopython SeqRecord object containing the sequence
+        min_length: Minimum ORF length in nucleotides (default: 30)
+        
+    Returns:
+        List of dictionaries with ORF information
+    """
+    orfs = []
+    sequence = seq_record.seq
+    seq_length = len(sequence)
+    
+    # Define genetic code parameters
+    start_codons = ['ATG', 'GTG', 'TTG']
+    stop_codons = ['TAA', 'TAG', 'TGA']
+    
+    # Check all six reading frames (3 forward, 3 reverse)
+    for frame in range(6):
+        # Set frame parameters
+        is_reverse = frame >= 3
+        frame_offset = frame % 3
+        
+        # Get appropriate sequence for frame
+        if is_reverse:
+            working_seq = sequence.reverse_complement()
+        else:
+            working_seq = sequence
+            
+        # Adjust for frame offset
+        working_seq = working_seq[frame_offset:]
+        
+        # Scan through the sequence
+        pos = 0
+        while pos + 3 <= len(working_seq):
+            codon = str(working_seq[pos:pos+3])
+            
+            if codon in start_codons:
+                start = pos
+                end = pos + 3
+                has_stop = False
+                
+                # Look for stop codon
+                while end + 3 <= len(working_seq):
+                    codon = str(working_seq[end:end+3])
+                    if codon in stop_codons:
+                        has_stop = True
+                        end += 3
+                        break
+                    end += 3
+                
+                if has_stop:
+                    orf_length = end - start
+                    if orf_length >= min_length:
+                        # Convert positions to original sequence coordinates
+                        if is_reverse:
+                            original_start = seq_length - (frame_offset + end)
+                            original_end = seq_length - (frame_offset + start)
+                        else:
+                            original_start = frame_offset + start
+                            original_end = frame_offset + end
+                            
+                        orfs.append({
+                            'sequence_id': seq_record.id,
+                            'start': original_start,
+                            'end': original_end,
+                            'length': orf_length,
+                            'strand': '-' if is_reverse else '+',
+                            'frame': frame + 1,
+                            'protein': working_seq[start:end].translate()
+                        })
+                pos = end  # Skip past this ORF
+            else:
+                pos += 3  # Move to next codon
+                
+    return orfs
+
+def find_all_orfs(genome_file: str, min_length: int = 30) -> List[Dict]:
+    """
+    Find all ORFs in a genome file (FASTA/GenBank format)
+    
+    Args:
+        genome_file: Path to input file
+        min_length: Minimum ORF length in nucleotides
+        
+    Returns:
+        List of ORF dictionaries from all sequences in file
+    """
+    all_orfs = []
+    
+    # Auto-detect file format
+    file_format = 'fasta' if genome_file.endswith(('.fasta', '.fa')) else 'genbank'
+    
+    with open(genome_file, 'r') as fh:
+        for record in SeqIO.parse(fh, file_format):
+            orfs = find_orfs(record, min_length)
+            all_orfs.extend(orfs)
+    
+    return all_orfs
+
+```
+
+# LQ 9.2a
+
+After analyzing the code, cosider the following as TRUE or FALSE.
+
+The function find_all_orfs() implements find_orfs().
+
+# LQ 9.2b
+
+What are the differences between the two functions find_all_orfs() and find_orfs()?
+
+
+That was fun, wasn't it? Okay, do not close your python terminal. Python is an object-oriented programming language. We are going to create first "object" here that will inherit the output of the functions we just created. 
+
+```python
+orfs = find_all_orfs("NC_000913.fasta")
+```
+It may take a second to run.
+# LQ 9.2c
+
+We made an object that inherited the output of find_all_orfs(). What did we name this object?
+
+Let's take some time to inspect this object. If we look at the documentation, the output of find_all_orfs() should give us a "List of ORF dictionaries from all sequences in file." This is super exciting becauase we essentially are able to carry all of our wanted output in a single variable.
+
+If you just type 
+```python
+orfs
+```
+a bunch of stuff prints to screen. 
+```python
+type(orfs)
+```
+
+# LQ 9.2c
+
+What type of object is our object?
+
+Now we are going to make an object of the first item in our object! Notice how just typing what you want and typing your object name give you the same answer.
+```python
+[orfs[0]]
+first = [orfs[0]]
+first
+```
+The object first inherits all of the output of our command, saving us lots of typing and enhancing our ability to scale up. Cool.
+
+# LQ 9.2d
+What does the second line in our orfs[] list look like? Find its length and submit the answer.
+
+
+Okay, now we are going to clean things up a little bit. You can see the first and second ORF in our orfs[] list are very different lengths. Let's only select the ORFs longer than 300bp.
+
+```python
+#here is a cute mini for loop function for you!!! :) 
+long_orfs = [orf for orf in orfs if orf['length'] >= 300]
+print(f"Found {len(long_orfs)} ORFs longer than 300bp")
+```
+
+# LQ 9.3a
+How many orfs are longer than 300bp?
+
+Alter the print function slightly! 
+
+# LQ 9.3b
+How many orfs did we originally have before we trimmed?
 
 
 
