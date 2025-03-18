@@ -308,7 +308,7 @@ Let's see how long the virus of SARS-CoV-2 is.
 awk 'BEGIN{FS="[> ]"} /^>/{val=$2;next}  {print val,length($0)}'   sars_cov_2.fasta
 ```
 
-# LQ9.4
+## LQ9.4
 
 The genome of SARS-CoV-2 is ________ bp and it is ________ bp smaller than the ecoli genome. Tiny! (hint: use substraction from questsion LQ9.1c)
 
@@ -328,10 +328,10 @@ start_codons = ["ATG"]
 stop_codons = ["TGA", "TAA", "TAG"]
 ```
 
-# LQ 9.5a
+## LQ 9.5a
 SARS-CoV-2 has _______ total ORFs and ____ ORFs less than 300 bp.
 
-# LQ 9.5b
+## LQ 9.5b
 The length of the first ORF in the SARS-CoV-2 genome from the TRIMMED ORFs object (long_orfs) is ____ bp.
 
 Quite different than our good friend E.Coli! Nothing but bare-bones in most viruses. :) Wild how they can wreak havoc with just small levels of genomic machinery.
@@ -403,12 +403,15 @@ export_trimmed_proteins(long_orfs, "sars_cov_2_proteome.fasta")
 
 I know it may be frustrating for you to move from python to bash. If you want to inspect your file names in your directory, you can use the following commands. Just note it will return them as a list, but it will still allow you to see what is there.
 
-
 ```python
 import os
 os.listdir()
 ```
-Now, here is where the magic happens. 
+You should now see a file named "sars_cov_2_proteome.fasta".
+
+Now, here is where the magic happens. We now have extracted all the protein sequences of a given reading frame length in the SARS-COV-2 genome. Cool!
+
+
 Here is a script to 
 ```python
 import csv
