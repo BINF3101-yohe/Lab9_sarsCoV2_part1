@@ -43,7 +43,7 @@ Fetch the E. coli genome from NCBI. We already learned how to do this in bash. N
 
 We are using the Entrez.efetch (http://biopython.org/DIST/docs/tutorial/Tutorial.html#sec149) and SeqIO.read (http://biopython.org/DIST/docs/tutorial/Tutorial.html#sec37) functions from biopython.
 
-Here are two ways to 
+Here are two ways to download the e-coli genome whose accession number is "NC_000913".
 ```python
 from Bio import Entrez
 
@@ -105,7 +105,7 @@ Okay, great!!! Moving right along. We need to get set up to do some more elegant
 python
 ```
 
-I am not going to have you WRITE any python code yourself today, but we should begin to look at what it is doing. Here, I am defining three fucntions we will use:
+I am not going to have you WRITE any python code yourself today, but we should begin to look at what it is doing. Here, I am defining two fucntions we will use:
 ```bash
 find_orfs()
 find_all_orfs()
