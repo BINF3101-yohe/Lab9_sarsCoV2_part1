@@ -347,21 +347,40 @@ An organism can read codons in ORFs (hence open-READING-frame) and translate the
 ## Intro to hydrophobicity
 The hydrophobicity of an amino acid is its tendency to repel water molecules. These amino acids tend to stick together in a non-polar environment. One well-known example of hydrophobicity is the lipid membrane of cells. This hydrophobic cell membrane ensures that the environment outside the cell (water and anything inside that water) stays outside, and all the important bits of the cell (e.g., the mitochondria, nucleus, ribosomes) stay inside the cell.
 
+![Difference-Between-Hydrophilic-and-Hydrophobic_1](https://github.com/user-attachments/assets/7ac3e8ff-d23f-4813-b428-167580351180)
+
 Hydrophilic proteins cannot pass through the hydrophobic membrane since its hydrophobic interior will repel them, but hydrophobic proteins can sit happily embedded inside the membrane. These hydrophobic proteins are called transmembrane proteins. Transmembrane proteins typically function as transport channels between the interior and exterior of the cell and enable cell signaling and absorption. In the case of viruses, e.g., SARS-CoV-2, we expect at least some proteins to be embedded in the viral membrane. For instance, SARS-CoV-2 viruses can only enter human cells when the spike protein that sticks out on the exterior of the virus binds to a specific receptor in human cells.
 
 Transmembrane proteins usually contain more hydrophobic amino acids than other proteins because their environment is a strictly hydrophobic lipid membrane. Therefore, one naive approach to finding transmembrane proteins might be to look for proteins with a high degree of hydrophobicity.
 
+![life11e-fig-06-03-0 (1)](https://github.com/user-attachments/assets/51bf15ee-c6ae-4dbd-bf6e-21c72678957b)
+
 The less-biological explanation of all this might be that the little, yellow hydrophobic tails of the lipids in the membrane attract each other because they are all hydrophobic. They can also attract proteins, provided that the amino acids inside that protein are also hydrophobic. The little hydrophobic tails also repel anything hydrophilic, so hydrophilic proteins can't pass through the hydrophobic membrane. So, simply put, hydrophobic molecules attract other hydrophobic molecules and repel any hydrophilic molecules. Finally, hydrophobic molecules repel water, while hydrophilic molecules are drawn toward water.
 
-Yada, yada, yada.
+We are going to determine the hydrophobicity of the proteins annotated from the SARS-CoV-2 genome. This will give us a sense of the diversity of different types of proteins that there are in its genome.
+
+# LQ 9.6a
+
+Why are we interested in trying to identify proteins that may be transmembrane proteins in a viral genome?
+
+## LQ 9.6b
+
+Do you expect transmembrane proteins to have a higher-than- or lower-than-average hydrophobicity? Justify your answer.
 
 First, some housekeeping. In your bash terminal, still in the lab_9 directory, we need to install a few more modules and copy over a table with the hydrophobicity values of each amino acid.
 ```bash
 pip install seaborn
 cp /projects/class/binf3101_001/aminoacid_properties.csv ~/lab_9
+module load python
 ```
 
 We now are going to translate our open reading frames and export them into a fasta file of amino acid sequences using this beautiful code I am providing you.
+
+Start a python terminal within your lab_9 directory.
+```bash
+python
+```
+We have to load our data from before if this is a new terminal. 
 
 ```python
 from typing import List, Dict
