@@ -371,6 +371,7 @@ First, some housekeeping. In your bash terminal, still in the lab_9 directory, w
 ```bash
 pip install seaborn
 cp /projects/class/binf3101_001/aminoacid_properties.csv ~/lab_9
+cp /projects/class/binf3101_001/my_helpers.py ~/lab_9
 module load python
 ```
 
