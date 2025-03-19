@@ -699,12 +699,63 @@ Follow my instructions for downloading a subset of viruses to compare to.
 
 9. Rename the downlaoded file "viral_metadata.csv".
 
-10. Open it ups and have a look. Pretty cool right? Everyone will have downloaded up to 20 randomly sampled genomes per potential host. It trims our data set from 14 million to about 7-8,000.
+10. Open it ups and have a look. Pretty cool right? Everyone will have downloaded up to 20 randomly sampled genomes per potential host. It trims our data set from 14 million to about 7-10,000.
 
 11. Upload this file to the cluster, making sure it is happily nested in your lab_9 director.
 
 
 Okay, now wee are ready to make a VERY cool plot. 
+
+We are going to run the rest of the commands in bash, but you will need to exit a python script.
+
+First, copy the plotting script to your lab_9 directory.
+```bash
+cp /projects/class/binf3101_001/viral_genome_histogram.py ~/lab_9
+```
+You can inspect it if you want, it's a good looking script. (using nano or vi)
+
+If you have uploaded your .csv properly, you should just be able to run the following command:
+
+```bash
+python viral_genome_histogram.py
+```
+WoW! Is that gorgeous or what!? If it ran properly, it should have created a file "viral_genome_histogram.png". Let's have a look:
+![viral_genome_histogram](https://github.com/user-attachments/assets/e3b63bea-2045-481e-b095-bd6c3c845f24)
+
+## LQ 9.12a
+Upload your plot you just made. :-)
+
+Note, yours will look very different than mine because we randomly sampled from the NCBI website. 
+
+## LQ 9.12b
+Have a look at your plot and answer the following question:
+Which viruses are typically longer -- DNA or RNA viruses? Why?
+
+
+For this last exercise, you will need to dig deep to the first part of the lab and keep the size of the SARS-CoV-2 genome handy (LQ9.4). We are going to edit the python script "viral_genome_histogram.py" using nano or vi.
+<img width="899" alt="Screenshot 2025-03-18 at 10 57 30 PM" src="https://github.com/user-attachments/assets/6fff70a9-651d-4b7f-89ef-1a8e4f5586ad" />
+
+Scroll down to the line "observed_lengths" is defined. Uncomment this line and replace the ##### with the size of the SARS-CoV-2 genome.
+
+Uncomment out the line beginning with plt.axvline().
+
+Change the name of the output file from "viral_genome_histogram.png" to "viral_genome_histogram_01.png".
+
+Save and run the command again. 
+```bash
+python viral_genome_histogram.py
+```
+Double WOW!!! Use 'ls' to see if your new plot was made. Download it locally and have a look.
+
+## LQ 9.12c
+Upload your edited plot
+"viral_genome_histogram_01.png", plotting the red line of the SARS-CoV-2 genome size.
+
+## LQ 9.12d
+Is SARS-CoV-2 among the longer or shorter RNA viruses? Can you find any biological mechanisms to explain this?
+
+
+
 
 
 [![License: CC BY-NC-SA 4.0](https://licensebuttons.net/l/by-nc-sa/4.0/80x15.png)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
