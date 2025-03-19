@@ -676,6 +676,35 @@ Upload your hydrophobicity .png file so I can help inspect it.
 ## LQ 9.11b
 Study your .png file you made. How many proteins in the SARS-CoV-2 genome have good potential to be transmembrane proteins?
 
+# We are almost there, folks. You are doing awesome.
+
+How does SARS-CoV-2 compare to other viruses? Is it a small virus or a large virus? We can't really say without a reference. Thankfully, NCBI has us covered. NCBI Virus is a subset of NCBI dedicated only to viral sequences. To determine the size of SARS-CoV-2, we'll download a bunch of viral sequences and compare the lengths of their genomes. We could also compare other things, e.g., the number of genes, but, for the purposes of this homework, it's sufficient to compare the sequence lengths.
+
+Follow my instructions for downloading a subset of viruses to compare to.
+
+1. Visit https://www.ncbi.nlm.nih.gov/labs/virus/vssi/#/virus?SeqType_s=Nucleotide
+
+2. You can see there are over 14 million viral sequences available to compare to! We don't need to download all, but let's subsample. Click "Download".
+
+3. Under the 'Results' column on the right, select ".csv". (We only want the metadata, not the sequences). Click "Next".
+
+4.  Select "Download a randomized subset of all records" and a new set of options will apear.
+
+5.  Select the second option "Download a randomized subset of " [enter 20] "records per category stratefied by "host"". Click "Next".
+
+6.  A bunch of checkmarks will be selected by default. Keep all of these. Make sure to additionally check "Molecule type". It should look like this:
+   <img width="1469" alt="Screenshot 2025-03-18 at 10 41 47 PM" src="https://github.com/user-attachments/assets/db00a06e-0de7-4c33-9211-1fc519fa4eab" />
+
+8. Click "Download".
+
+9. Rename the downlaoded file "viral_metadata.csv".
+
+10. Open it ups and have a look. Pretty cool right? Everyone will have downloaded up to 20 randomly sampled genomes per potential host. It trims our data set from 14 million to about 7-8,000.
+
+11. Upload this file to the cluster, making sure it is happily nested in your lab_9 director.
+
+
+Okay, now wee are ready to make a VERY cool plot. 
 
 
 [![License: CC BY-NC-SA 4.0](https://licensebuttons.net/l/by-nc-sa/4.0/80x15.png)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
