@@ -374,13 +374,20 @@ cp /projects/class/binf3101_001/aminoacid_properties.csv ~/lab_9
 module load python
 ```
 
-We now are going to translate our open reading frames and export them into a fasta file of amino acid sequences using this beautiful code I am providing you.
-
 Start a python terminal within your lab_9 directory.
 ```bash
 python
 ```
-We have to load our data from before if this is a new terminal. 
+We have to load our data or some new functions from before if this is a new terminal. If you inspect my_helpers.py, you might recognize the code from last class' lab ;-)
+
+```python
+from my_helpers import find_all_orfs
+orfs = find_all_orfs("sars_cov_2.fasta")
+long_orfs = [orf for orf in orfs if orf['length'] >= 300]
+```
+
+
+We now are going to translate our open reading frames and export them into a fasta file of amino acid sequences using this beautiful code I am providing you. Paste this now in the terminal.
 
 ```python
 from typing import List, Dict
@@ -414,7 +421,7 @@ def export_trimmed_proteins(orfs: List[Dict], output_filename: str) -> None:
                 fasta_file.write(protein_seq[j:j+60] + "\n")
 ```
 
-You can run the command on your long_orfs you saved from SARS-CoV-2. 
+You can run the command of the function we just defined on your long_orfs you saved from SARS-CoV-2. 
 
 ```python
 export_trimmed_proteins(long_orfs, "sars_cov_2_proteome.fasta")
@@ -430,8 +437,29 @@ You should now see a file named "sars_cov_2_proteome.fasta".
 
 Now, here is where the magic happens. We now have extracted all the protein sequences of a given reading frame length in the SARS-COV-2 genome. Cool!
 
+Exit out of python and inspect the new file.
+```python
+exit()
+```
 
-Here is a script to 
+## LQ 9.7a
+```bash
+head sars_cov_2_proteome.fasta
+```
+Paste your output
+
+## LQ 9.7b
+The is a fasta file of ______.
+
+
+Now we are going to calculate the hydrophobicity for each protein in the data set. There are not that many in the SARS-CoV-2 genome, but there are thousands in teh E.coli genome so we want a script where we can scale up.
+
+Start a python terminal and paste the following script that defines two functions.
+
+## LQ 9.8
+
+What are these two functions called based on the script below?
+
 ```python
 import csv
 from Bio import SeqIO
@@ -514,30 +542,47 @@ def calculate_hydrophobicities(fasta_file: str, hydro_table: Dict[str, float]) -
 
 ```
 
-Run the command
+Run the commands. We first need to read in the hydrophobicity table I provided you. Inspect what this table looks like:
+https://github.com/BINF3101-yohe/Lab9_sarsCoV2_part1/blob/master/data/aminoacid_properties.csv
 
+## LQ9.9
+There are 20 amino acids. Which amino acid has the highes hydrophibicity? Which one has the lowest. (hint: you will have to look up what the letter corresponds to if you do not have them memorized.) 
+
+We are creating a variable called "hydro_table" that will be used to input into the function below.
 ```python
 # Load your hydrophobicity scale
 hydro_table = load_hydrophobicity_table("aminoacid_properties.csv")
 ```
 
+Note there are two inputs required in this function, one is an amino acid sequence, one is a table of amino acids stating the hydrophobicity.
 ```python
 # Calculate averages for exported proteins
 sars_cov_2_data = calculate_hydrophobicities("sars_cov_2_proteome.fasta", hydro_table)
 
 # Convert to pandas DataFrame for analysis
 import pandas as pd
-df = pd.DataFrame(ecoli_data)
+df = pd.DataFrame(sars_cov_2_data)
 print(df[['sequence_id', 'start', 'end', 'average_hydrophobicity']].head())
 ```
+Notice the head function here! How cool!
+
+## LQ9.10
+
+What happens if you delete the ".head()" from the last command you ran? Paste your output from the print function to show how the hydrophobicities have been calculated for every protein (after you have trimmed the script).
+
+
+# Okay, now you all are ready to play hardball. I believe in you.
 
 Repeat this process for your ecoli proteome. This includes running the functions:
 --export_trimmed_proteins()
 --calculate_hydrophobicities()
 
-Save your variable that receives the output to calculate_hydrophobicities() as "ecoli_data".
+Save your variable that receives the output to calculate_hydrophobicities() as "ecoli_data". <-- VERY IMPORTANT!
 
-We are now ready to compare the hydrophobicity of the proteins present in the genome of both ecoli and SARS-CoV-2.
+
+We are now ready to compare the hydrophobicity of the proteins present in the genome of both ecoli and SARS-CoV-2. How are we going to do that? We are going to make a totally BA plot, that's what.
+
+Paste the following script into your python terminal. This is making 
 
 
 ```python
@@ -624,5 +669,13 @@ plot_hydrophobicity_comparison(
 )
 ```
 Your first plot in python! Wow!!! Download your .png file locally onto your computer and inspect it. Uplaod your image file to the Lab Worksheet. 
+
+## LQ9.11a
+Upload your hydrophobicity .png file so I can help inspect it.
+
+## LQ 9.11b
+Study your .png file you made. How many proteins in the SARS-CoV-2 genome have good potential to be transmembrane proteins?
+
+
 
 [![License: CC BY-NC-SA 4.0](https://licensebuttons.net/l/by-nc-sa/4.0/80x15.png)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
